@@ -3,13 +3,11 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-
-
 url = 'https://oriencoop.cl/sucursales.htm'
 
 headers = {
     'Accept': 'text/css,*/*;q=0.1',
-    'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 OPR/90.0.4480.117'
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 OPR/90.0.4480.117'
 }
 
 # req = requests.get(url=url, headers=headers)
@@ -24,7 +22,7 @@ with open('pages/oriencoop.html', encoding='utf-8') as file:
 soup = BeautifulSoup(src, 'lxml')
 
 all_pages_dict = {}
-all_pages = soup.find('ul',class_='c-list c-accordion').find_all('a')
+all_pages = soup.find('ul', class_='c-list c-accordion').find_all('a')
 for item in all_pages:
     item_text = item.text
     item_href = 'https://oriencoop.cl' + item.get('href')
@@ -42,8 +40,7 @@ with open('pages/all_pages.json', encoding='utf-8') as file:
 
 data_list = []
 for city_name, city_href in all_pages_links.items():
-
-    req = requests.get(url=city_href, headers=headers)
+    req = requests.get(url=city_href[0], headers=headers)
     src = req.text
 
     """Сохраню страницы под именем городов, чтобы обойтись без бана при большом кол-ве запросов"""
@@ -56,11 +53,11 @@ for city_name, city_href in all_pages_links.items():
 
     soup = BeautifulSoup(for_soup, 'lxml')
 
-    all_info =[info.text.strip() for info in soup.find(class_='s-dato').find_all('span')]
+    all_info = [info.text.strip() for info in soup.find(class_='s-dato').find_all('span')]
 
     geocode_url = soup.find('div', class_='s-mapa').find_all('iframe')[0]['src']
     coord = re.compile(r'\!2d([^!]+)\!3d([^!]+)')
-    geocode = list(map(float, coord.search(geocode_url).group(1, 2)))
+    latlon = list(map(float, coord.search(geocode_url).group(1, 2)))
 
     default_phones = [phone.text.strip() for phone in soup.find_all(class_='call')]
 
@@ -71,9 +68,9 @@ for city_name, city_href in all_pages_links.items():
 
     data = {
         'address': address,
-        'latlon': geocode,
+        'latlon': latlon,
         'name': name,
-        'phones':  phones,
+        'phones': phones,
         'working_hours': working_hours
     }
 

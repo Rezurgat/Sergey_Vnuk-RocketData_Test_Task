@@ -63,26 +63,19 @@ for shop_name, shop_href in all_pages_links.items():
 
     address = all_info[0][1].strip()
 
-
-
-
     loc = [script for script in src_coords if 'showShopsMap' in script]
     rgx = re.compile(r'\((.+)\)')
     cut = json.loads(rgx.search(loc[0]).group(1).replace("'", '"'))
 
-    latlon =[]
+    latlon = []
     for item in cut:
-        coord= [float(cord) for cord in item['cords']]
+        coord = [float(cord) for cord in item['cords']]
         item['cords'] = coord
         latlon.append(coord)
-
-
-
 
     name = soup.find('div', class_='container').find('h1').text
     phones = all_info[1][1].split(',')
     working_hours = [all_info[2][1]]
-
 
     data = {
         'address': address,
