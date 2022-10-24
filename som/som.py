@@ -15,7 +15,7 @@ headers = {
 
 # req = requests.get(url=url, headers=headers)
 # src = req.text
-#
+
 # with open('pages\som.html', 'w', encoding='utf-8') as file:
 #     file.write(src)
 
@@ -44,7 +44,7 @@ with open('pages/all_pages.json', encoding='utf-8') as file:
 data_list = []
 for shop_name, shop_href in all_pages_links.items():
 
-    req = requests.get(url=shop_href, headers=headers)
+    req = requests.get(url=shop_href[0], headers=headers)
     src = req.text
     src_coords = Selector(text=req.text).xpath("//script/text()").extract()
 
@@ -73,7 +73,7 @@ for shop_name, shop_href in all_pages_links.items():
         item['cords'] = coord
         latlon.append(coord)
 
-    name = soup.find('div', class_='container').find('h1').text
+    name = soup.find('div', class_='page-body').find('div', class_='container').find('h1').text
     phones = all_info[1][1].split(',')
     working_hours = [all_info[2][1]]
 
@@ -86,5 +86,5 @@ for shop_name, shop_href in all_pages_links.items():
     }
 
     data_list.append(data)
-# with open('data.json', 'w', encoding='utf-8') as file:
-#     json.dump(data_list, file, indent=4, ensure_ascii=False)
+with open('data.json', 'w', encoding='utf-8') as file:
+    json.dump(data_list, file, indent=4, ensure_ascii=False)
