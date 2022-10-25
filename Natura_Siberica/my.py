@@ -14,8 +14,19 @@ headers = {
 req = requests.get(url=url, headers=headers)
 src = req.text
 
-with open('pages/natura_siberica.html', 'w', encoding='utf-8') as file:
-    file.write(src)
+# with open('pages/natura_siberica.html', 'w', encoding='utf-8') as file:
+#     file.write(src)
 
 with open('pages/natura_siberica.html', encoding='utf-8') as file:
     src = file.read()
+
+soup = BeautifulSoup(src, 'lxml')
+
+all_pages_dict = {}
+all_pages = soup.find_all('a', class_='card-list__link')
+print(all_pages)
+for link in all_pages:
+    link_name = soup.find('p', class_='card-list__name')
+    print(link_name)
+    # item_href = 'https://naturasiberica.ru' + item.get('href')
+    # all_pages_dict[item_text] = [item_href]
